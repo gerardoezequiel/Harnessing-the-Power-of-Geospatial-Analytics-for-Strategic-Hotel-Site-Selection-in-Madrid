@@ -1,6 +1,6 @@
 # Harnessing the Power of Geospatial Analytics for Strategic Hotel Site Selection in Madrid
 Prepared By: Gerardo Ezequiel Martín Carreño
-Date: 04/07/07
+Date: 03/07/07
 
 ## 1. Introduction and Problem Context
 
