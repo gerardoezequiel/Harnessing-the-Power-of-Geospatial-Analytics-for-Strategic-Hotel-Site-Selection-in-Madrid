@@ -9,6 +9,8 @@ NH Hotels, a well-established hotel chain with a significant footprint in Madrid
 
 The target demographic for their new hotel is the mid-high income population aged 40-69. This group represents a significant portion of Madrid's visitors, drawn to the city for its rich cultural heritage, vibrant performing arts scene, and diverse gastronomical offerings. These insights are supported by the Madrid Tourism Report (Tourist Perception Survey 2019), which indicates that 97.64% of visitors associate the city's service offerings with a mid-high purchasing power. The report also highlights the main reasons for visiting Madrid, including its cultural heritage, performing arts, and gastronomy.
 
+![](https://i.ibb.co/dmc2g0g/Carto-tourism-graphic.png)
+
 However, catering to this demographic is not without its challenges. The mid-high income population often has discerning tastes and high expectations for their travel experiences. They seek accommodations that offer a blend of luxury, convenience, and unique experiences that reflect the local culture.
 
 Moreover, the location of the hotel plays a crucial role in its success. It needs to be situated in an area that is accessible but also close to the city's main attractions. The ideal location would be in a vibrant area with a variety of dining and entertainment options.
