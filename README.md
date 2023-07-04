@@ -1,6 +1,6 @@
 # Harnessing the Power of Geospatial Analytics for Strategic Hotel Site Selection in Madrid
-Prepared By: Gerardo Ezequiel Martín Carreño
-Date: 03/07/07
+Prepared By: [Gerardo Ezequiel Martín Carreño]
+Date: [04/07/07]
 
 ## 1. Introduction and Problem Context
 
@@ -29,14 +29,18 @@ The pedestrian data was processed using a [Python notebook](https://colab.resear
 
 **Points of Interest**: Points of interest data, sourced from the [OpenStreetMap Nodes via the CARTO Data Observatory](https://clausa.app.carto.com/data/observatory/openstreetmap/subscriptions/osm_nodes_205a5f56), provides information about key attractions in Madrid. This includes cultural heritage sites, performing arts venues, gastronomical hotspots, and other attractions that draw tourists to the city. The proximity of a hotel to these points of interest can significantly influence its attractiveness to potential guests.
 
-**Demographic and Building Data**:To further enrich our analysis, we incorporated demographic data and building data from the CARTO Data Observatory. The demographic data, including age and income information, helped us understand the socio-economic landscape of different areas in Madrid. The building data, sourced from the [CARTO demo tables](https://clausa.app.carto.com/data/explorer/carto_dw/carto-demo-data/demo_tables/inspire_buildings_madrid), provided insights into the physical landscape of the city, which could influence the feasibility of establishing a new hotel in certain locations.
+**Demographic and Building Data**: To further enrich our analysis, we incorporated demographic data and building data from the CARTO Data Observatory. The demographic data, including age and income information, helped us understand the socio-economic landscape of different areas in Madrid. The building data, sourced from the [CARTO demo tables](https://clausa.app.carto.com/data/explorer/carto_dw/carto-demo-data/demo_tables/inspire_buildings_madrid), provided insights into the physical landscape of the city, which could influence the feasibility of establishing a new hotel in certain locations.
 
 #### 2.1.2 Preprocessing
 Both the pedestrian and accommodations data were processed in a [Colab Python notebook](https://colab.research.google.com/drive/1YSLiIRLenV-iwKi4YFTwBYeW-v8SAJUx?usp=sharing). The pedestrian data was cleaned, standardized, timestamps were created, missing values were handled, and geospatial points were generated. For the accommodations data, relevant information was extracted, incomplete entries were removed, star ratings were converted to numerical format, and hotel brands were classified using internet research for competitor analysis. The remaining datasets, including pedestrian data, building data, and OpenStreetMap Nodes for points of interest, were processed using Google's BigQuery. This powerful tool allowed us to handle large volumes of data efficiently, performing operations such as filtering, aggregation, and spatial joins. The processed data was then integrated into our analysis, providing a more comprehensive view of Madrid's tourism landscape.
 
 <iframe width="1280px" height="720px" src="https://clausa.app.carto.com/map/51125179-58c9-47fa-9f23-022d86f0c120"></iframe>
 
+The processed data was then utilized to create visualizations and maps that provide a better understanding of the variables and exploratory analysis. For example, the pedestrian heatmap shows the highest concentration of pedestrians from our target audience (people between 40 and 69 years old with mid-high income) in the districts of Salamanca and Chamberí. By zooming in on the map, we can observe time series analysis of pedestrian traffic in selected streets, particularly in the low emission zone of Madrid. This analysis covers the period from January 2019 to June 2021, and the data can be filtered through SQL parameters or widgets. The dynamic visualization showcases how pedestrian counts evolve weekly. Additionally, the map displays the distribution of hotels in the study area, allowing users to filter and access additional information for each hotel through a side panel.
 
+The points of interest are categorized into "patrimony, museum and monuments," "theatre and arts," "gastronomy," and "leisure." The map highlights the high number of restaurants and cafés with green and yellow dots.
+
+This initial map serves as a foundation for understanding the data, conducting exploratory analysis, and gaining insights into the variables and their relationships. It provides NH Hotels with valuable information to inform their decision-making process and strategy for hotel site selection in Madrid.
 
 ### 2.2. Accessibility Analysis
 
@@ -51,6 +55,16 @@ To incorporate this factor, we calculated the distance from each hexagon in our 
 This proximity data, along with the coverage of 15-minute walk isochrones from tourist points of interest, were used to enrich our analysis. These factors helped us identify locations that not only offer high accessibility to key attractions but also maintain a healthy distance from existing NH Hotels, ensuring a balanced distribution of accommodations across the city.
 <iframe width="1280px" height="720px" src="https://clausa.app.carto.com/map/d973dc67-828d-414c-bc74-3cc839221e98"></iframe>
 
+In this map, we have visualized the results of the 15-minute isochrones based on different categories of points of interest (POI), including "patrimony, museum and monuments," "theatre and arts," "gastronomy," and "leisure." The aggregated isochrones are represented in the background, providing an overview of the areas that can be reached within a 15-minute walk from the respective POIs.
+
+The first isochrone, shown in blue, represents the intersection of these aggregated isochrones. It highlights the areas where multiple categories of POIs overlap, indicating locations that offer easy access to diverse attractions within a short walking distance. These areas are particularly desirable for hotel development as guests can conveniently explore a variety of cultural, artistic, culinary, and leisure experiences.
+
+Additionally, the map displays the location of hotels that fall within this aggregated isochrone. These hotels are strategically positioned to ensure that guests can reach the POIs belonging to the different categories within a 15-minute walk. By staying at these hotels, visitors have the advantage of convenient access to a range of attractions without the need for extensive travel.
+
+This visualization provides NH Hotels with valuable insights into the distribution of isochrones, the areas of overlap, and the location of hotels within the desired accessibility range. It allows NH Hotels to identify specific areas where the concentration of diverse POIs and hotel accommodations create a favorable environment for attracting and satisfying guests.
+
+By leveraging this information, NH Hotels can make informed decisions regarding the selection of hotel sites that offer the best proximity to popular attractions and enhance the overall guest experience. This strategic approach ensures that NH Hotels can position their establishments in areas with high tourist appeal and optimize their market presence in Madrid.
+
 ### 2.3 Spatial Index Enrichment
 
 To enhance the granularity and precision of our analysis, we incorporated the H3 spatial indexing system using the CARTO Analytics Toolbox. Spatial indexes, like H3, are global discrete grids that cover the entire globe. They are designed to efficiently process and query spatial data, making spatial analysis faster and more accurate.
@@ -61,7 +75,9 @@ By using the H3 spatial indexing system, we were able to create an enriched grid
 
 <iframe width="1280px" height="720px" src="https://clausa.app.carto.com/map/d5e61e72-4097-4d5e-ab25-b25c48e271e8"></iframe>
 
+This map provides valuable insights obtained by enriching the spatial index with our data using an H3 resolution of 10. On the left side of the map, we can observe the concentration of pedestrians belonging to our target audience. This information allows NH Hotels to identify areas with high pedestrian activity, indicating popular tourist spots and potential hotspots for hotel development. By strategically positioning their hotels in these areas, NH Hotels can attract more guests and cater to their preferences, enhancing customer satisfaction and driving business growth.
 
+On the right side of the map, we have the visualization of the minimum distances between existing NH hotels. This information is crucial to avoid cannibalization and ensure a balanced distribution of accommodations across the city. By maintaining an appropriate distance between NH hotels, NH Hotels can optimize their market presence and prevent customers from being drawn away from existing locations. The map assists NH Hotels in identifying gaps in coverage and strategically selecting new hotel sites that maximize accessibility to key attractions while minimizing competition with their own properties. 
 
 
 
