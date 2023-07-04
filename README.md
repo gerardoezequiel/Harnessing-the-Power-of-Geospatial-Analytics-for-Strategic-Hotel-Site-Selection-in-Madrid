@@ -1,6 +1,6 @@
 # Harnessing the Power of Geospatial Analytics for Strategic Hotel Site Selection in Madrid
-Prepared By: Gerardo Ezequiel Martín Carreño
-Date: 03/07/2023
+Prepared By: [Gerardo Ezequiel Martín Carreño]
+Date: [04/07/07]
 
 ## 1. Introduction and Problem Context
 
@@ -34,7 +34,7 @@ The pedestrian data was processed using a [Python notebook](https://colab.resear
 #### 2.1.2 Preprocessing
 Both the pedestrian and accommodations data were processed in a [Colab Python notebook](https://colab.research.google.com/drive/1YSLiIRLenV-iwKi4YFTwBYeW-v8SAJUx?usp=sharing). The pedestrian data was cleaned, standardized, timestamps were created, missing values were handled, and geospatial points were generated. For the accommodations data, relevant information was extracted, incomplete entries were removed, star ratings were converted to numerical format, and hotel brands were classified using internet research for competitor analysis. The remaining datasets, including pedestrian data, building data, and OpenStreetMap Nodes for points of interest, were processed using Google's BigQuery. This powerful tool allowed us to handle large volumes of data efficiently, performing operations such as filtering, aggregation, and spatial joins. The processed data was then integrated into our analysis, providing a more comprehensive view of Madrid's tourism landscape.
 
-<iframe width="640px" height="360px" src="https://clausa.app.carto.com/map/51125179-58c9-47fa-9f23-022d86f0c120"></iframe>
+<iframe width="1280px" height="720px" src="https://clausa.app.carto.com/map/51125179-58c9-47fa-9f23-022d86f0c120"></iframe>
 
 
 
@@ -49,7 +49,7 @@ In addition to the isochrone intersection analysis, we also considered the proxi
 To incorporate this factor, we calculated the distance from each hexagon in our spatial grid to each existing NH Hotel. We then kept the minimum distance for each hexagon, representing the closest existing NH Hotel.
 
 This proximity data, along with the coverage of 15-minute walk isochrones from tourist points of interest, were used to enrich our analysis. These factors helped us identify locations that not only offer high accessibility to key attractions but also maintain a healthy distance from existing NH Hotels, ensuring a balanced distribution of accommodations across the city.
-<iframe width="640px" height="360px" src="https://clausa.app.carto.com/map/d973dc67-828d-414c-bc74-3cc839221e98"></iframe>
+<iframe width="1280px" height="720px" src="https://clausa.app.carto.com/map/d973dc67-828d-414c-bc74-3cc839221e98"></iframe>
 
 ### 2.3 Spatial Index Enrichment
 
@@ -59,7 +59,7 @@ For our analysis, we used an H3 resolution of 10. This resolution level was chos
 
 By using the H3 spatial indexing system, we were able to create an enriched grid that integrated various variables, including demographic data, hotel locations, and points of interest density. This enriched grid map provides a more detailed and accurate view of potential hotel locations, allowing us to identify optimal locations with greater precision. This approach ensures that our analysis is grounded in a robust understanding of the spatial dynamics of Madrid's city center.
 
-<iframe width="640px" height="360px" src="https://clausa.app.carto.com/map/d5e61e72-4097-4d5e-ab25-b25c48e271e8"></iframe>
+<iframe width="1280px" height="720px" src="https://clausa.app.carto.com/map/d5e61e72-4097-4d5e-ab25-b25c48e271e8"></iframe>
 
 
 
@@ -171,7 +171,7 @@ The kring parameter was set to 3, indicating that cells within a radius of 3 uni
 The Getis Ord hotspot analysis, conducted through the Commercial Hotspots tool in the analytical toolbox, helped us identify areas with clusters of high-ranking locations. This analysis allows us to pinpoint specific regions in Madrid where multiple factors align to create hotspots of desirable hotel sites. By identifying these hotspots, NH Hotels can focus their attention on areas with the highest potential for success and profitability.
 
 By combining geographically weighted regression (GWR) for spatial correlation analysis, the creation of a composite score based on weighted factors, and hotspot detection using Getis Ord statistics, we obtained a comprehensive understanding of the ideal hotel sites in Madrid. These techniques allowed us to consider multiple factors simultaneously and identify areas with clusters of high-ranking locations, providing valuable insights for NH Hotels' decision-making process in hotel site selection.
-<iframe width="640px" height="360px" src="https://clausa.app.carto.com/map/a6b9411a-7273-4ab4-ae63-037c91c95b94"></iframe>
+<iframe width="1280px" height="720px" src="https://clausa.app.carto.com/map/a6b9411a-7273-4ab4-ae63-037c91c95b94"></iframe>
   
 ### 2.5 Competitive Proximity and Dispersion Analysis using Local Outlier Factor and KNN 
 
@@ -186,7 +186,7 @@ The Competitive Proximity and Dispersion Analysis, utilizing the Local Outlier F
 By applying LOF and KNN methodologies, NH Hotels gains valuable insights into the competitive landscape of Madrid's hotel industry. The analysis reveals areas with a high concentration of hotels, indicating intense competition and potential cannibalization. This information allows NH Hotels to make informed decisions about the best location from their commercial hotspots. NH Hotels can select a location that not only offers accessibility to key attractions and amenities but also ensures a healthy distance from existing hotels, avoiding excessive competition and optimizing their market presence.
 
 The Competitive Proximity and Dispersion Analysis, supported by LOF and KNN techniques, plays a vital role in NH Hotels' expansion strategy. It helps them identify areas of opportunity, understand the competitive dynamics, and select the optimal location for their new hotel. By leveraging these insights, NH Hotels can position themselves strategically in the market, minimize cannibalization, and maximize their potential for success and profitability in the competitive hotel industry of Madrid.
-<iframe width="640px" height="360px" src="https://clausa.app.carto.com/map/dad1bcc9-c728-48ff-8661-ee3ae27049f2"></iframe>
+<iframe width="1280px" height="720px" src="https://clausa.app.carto.com/map/dad1bcc9-c728-48ff-8661-ee3ae27049f2"></iframe>
 
 
 
