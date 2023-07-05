@@ -1,6 +1,31 @@
+<style>
+/* CSS styles for animation */
+.code-block {
+  overflow: auto; /* Hide overflow to clip the height */
+  max-height: 200px; /* Initial max-height value */
+  max-width: 600px; /* Initial max-height value */
+  transition: max-height 0.5s ease-out; /* Apply transition effect */
+}
+
+.code-block:hover {
+  max-height: 800px; /* Increase max-height on hover */
+}
+</style>
 # Harnessing the Power of Geospatial Analytics for Strategic Hotel Site Selection in Madrid
 Prepared By: Gerardo Ezequiel Martín Carreño
 Date: 03/07/2023
+
+Table of Contents:
+1. Introduction and Problem Context
+2. Methodology
+   2.1 Data Acquisition & Preprocessing
+      2.1.1 Datasets
+      2.1.2 Preprocessing
+   2.2 Accessibility Analysis
+   2.3 Spatial Correlation, Hotspot Detection Analysis
+   2.4 Spatial Index Enrichment
+   2.5 Competitive Proximity and Dispersion Analysis using Local Outlier Factor and KNN
+3. Value of the Analysis for NH Hotels
 
 ## 1. Introduction and Problem Context
 
@@ -8,7 +33,6 @@ Date: 03/07/2023
 NH Hotels, a well-established hotel chain with a significant footprint in Madrid, is seeking for expansion. With 15 existing locations spread across the city, they have a strong understanding of the local market and a proven track record of delivering high-quality hospitality experiences. However, expansion in a city as dynamic and competitive as Madrid requires careful planning and strategic decision-making.
 
 The target demographic for their new hotel is the mid-high income population aged 40-69. This group represents a significant portion of Madrid's visitors, drawn to the city for its rich cultural heritage, vibrant performing arts scene, and diverse gastronomical offerings. These insights are supported by the Madrid Tourism Report (Tourist Perception Survey 2019), which indicates that 97.64% of visitors associate the city's service offerings with a mid-high purchasing power. The report also highlights the main reasons for visiting Madrid, including its cultural heritage, performing arts, and gastronomy.
-
 ![](https://i.ibb.co/dmc2g0g/Carto-tourism-graphic.png)
 
 However, catering to this demographic is not without its challenges. The mid-high income population often has discerning tastes and high expectations for their travel experiences. They seek accommodations that offer a blend of luxury, convenience, and unique experiences that reflect the local culture.
@@ -36,9 +60,82 @@ The pedestrian data was processed using a [Python notebook](https://colab.resear
 #### 2.1.2 Preprocessing
 Both the pedestrian and accommodations data were processed in a [Colab Python notebook](https://colab.research.google.com/drive/1YSLiIRLenV-iwKi4YFTwBYeW-v8SAJUx?usp=sharing). The pedestrian data was cleaned, standardized, timestamps were created, missing values were handled, and geospatial points were generated. For the accommodations data, relevant information was extracted, incomplete entries were removed, star ratings were converted to numerical format, and hotel brands were classified using internet research for competitor analysis. The remaining datasets, including pedestrian data, building data, and OpenStreetMap Nodes for points of interest, were processed using Google's BigQuery. This powerful tool allowed us to handle large volumes of data efficiently, performing operations such as filtering, aggregation, and spatial joins. The processed data was then integrated into our analysis, providing a more comprehensive view of Madrid's tourism landscape.
 
-<iframe width="1280px" height="720px" src="https://clausa.app.carto.com/map/51125179-58c9-47fa-9f23-022d86f0c120"></iframe>
+In addition to utilising BigQuery, we incorporated workflows, a newly introduced tool within the Carto Platform, to preprocess our base data specifically for the study area. These workflows proved instrumental in managing the intricacies of data processing tasks associated with the study area. By effectively utilising workflows, we streamlined the data preparation process, ensuring that the data was in an optimal state for further analysis.
+
+  <img src="https://i.ibb.co/GQ5JTKZ/Screenshot-2023-07-05-at-05-49-09-2x.png" alt="Workflow study">
+<figcaption><small><strong>Workflow 1.</strong> Creation of study area and spatial indexes and area and centroid calculation operations.</small></figcaption>
+
+The workflows played a crucial role in managing the various data processing tasks related to our study area. By leveraging the capabilities of these workflows, we were able to streamline the preprocessing of our base data, particularly for the map creation. This included handling data extraction, transformation, and loading operations in a systematic and organised manner.
+
+By incorporating workflows into our data processing pipeline, we achieved enhanced efficiency and reproducibility. The workflows provided a structured framework for executing tasks, enabling us to maintain consistency and accuracy throughout the process. This systematic approach not only saved time but also ensured that our data was processed consistently and reliably.
+
+Given the constraints of data availability, our study area was carefully selected to maximise the insights derived from the available pedestrian traffic data. This data, despite its high level of granularity, was restricted to the central area of Madrid, specifically within the boundaries of the m-30 motorway network. Consequently, we focused our analysis within this defined study area, which spans an approximate area of 37.72 km2 and 2439 h3 cells resolution 10. This deliberate choice allowed us to concentrate our efforts on a specific and meaningful subset of Madrid's tourism landscape, enabling us to gain a deeper understanding of the dynamics within this region.
+
+To extract relevant points of interest (POIs) from OpenStreetMap (OSM) for visualization and analysis, we used a SQL query. The query selected POIs based on specific tags, such as museums, attractions, theatres, restaurants, cafes, parks, and gardens. The retrieved data included the name and geographical coordinates (latitude and longitude) of each POI. This information was categorized into different groups, such as patrimony/monuments/museums, theatre/arts, gastronomy, and leisure.
+
+<div class="code-block">
+  <pre>
+    <code>
+      CREATE TABLE `carto-dw-ac-vs5d76ww.shared.madrid_osm_poi_study_area` AS
+WITH poi_data AS (
+  SELECT 
+    ROW_NUMBER() OVER() AS osm_tourism_poi_id,
+    names.value AS poi_name,
+    CASE 
+      WHEN tags.value IN ('museum', 'attraction', 'gallery', 'viewpoint', 'monument', 'memorial') THEN 'patrimony_monuments_museums'
+      WHEN tags.value IN ('theatre', 'cinema', 'arts_centre') THEN 'theatre_arts'
+      WHEN tags.value IN ('cafe', 'restaurant', 'bar', 'pub') THEN 'gastronomy'
+      WHEN tags.value IN ('park', 'garden', 'zoo', 'aquarium', 'theme_park', 'stadium', 'sports_centre', 'swimming_pool', 'golf_course') THEN 'leisure'
+    END AS poi_category,
+    do_geom.geom AS geom,
+    do_data.geoid AS geoid
+  FROM 
+    `carto-data.ac_vs5d76ww.sub_openstreetmap_pointsofinterest_nodes_esp_latlon_v1_quarterly_v1` do_data
+  INNER JOIN 
+    `carto-data.ac_vs5d76ww.sub_openstreetmap_geography_esp_latlon_v1` do_geom 
+  ON 
+    do_data.geoid = do_geom.geoid
+  INNER JOIN 
+    `carto-dw-ac-vs5d76ww.shared.madrid_study_area` AS study_area
+  ON 
+    ST_Contains(study_area.geom, do_geom.geom),
+    UNNEST(
+      ARRAY(
+        SELECT AS STRUCT key, value
+        FROM UNNEST(do_data.all_tags)
+        WHERE key IN ('tourism', 'amenity', 'shop', 'leisure')
+      )
+    ) AS tags,
+    UNNEST(
+      ARRAY(
+        SELECT AS STRUCT value
+        FROM UNNEST(do_data.all_tags)
+        WHERE key = 'name'
+      )
+    ) AS names
+)
+SELECT 
+  ANY_VALUE(CASE WHEN poi_category = 'patrimony_monuments_museums' THEN poi_name END) AS patrimony_monuments_museums,
+  ANY_VALUE(CASE WHEN poi_category = 'theatre_arts' THEN poi_name END) AS theatre_arts,
+  ANY_VALUE(CASE WHEN poi_category = 'gastronomy' THEN poi_name END) AS gastronomy,
+  ANY_VALUE(CASE WHEN poi_category = 'leisure' THEN poi_name END) AS leisure,
+  ANY_VALUE(geom) AS geom,
+  geoid
+FROM poi_data
+GROUP BY geoid
+HAVING
+  MAX(CASE WHEN poi_category = 'patrimony_monuments_museums' THEN poi_name END) IS NOT NULL
+  OR MAX(CASE WHEN poi_category = 'theatre_arts' THEN poi_name END) IS NOT NULL
+  OR MAX(CASE WHEN poi_category = 'gastronomy' THEN poi_name END) IS NOT NULL
+  OR MAX(CASE WHEN poi_category = 'leisure' THEN poi_name END) IS NOT NULL;
+    </code>
+  </pre>
+</div>
+
+
 
 The processed data was then utilized to create visualizations and maps that provide a better understanding of the variables and exploratory analysis. For example, the pedestrian heatmap shows the highest concentration of pedestrians from our target audience (people between 40 and 69 years old with mid-high income) in the districts of Salamanca and Chamberí. By zooming in on the map, we can observe time series analysis of pedestrian traffic in selected streets, particularly in the low emission zone of Madrid. This analysis covers the period from January 2019 to June 2021, and the data can be filtered through SQL parameters or widgets. The dynamic visualization showcases how pedestrian counts evolve weekly. Additionally, the map displays the distribution of hotels in the study area, allowing users to filter and access additional information for each hotel through a side panel.
+<iframe width="1280px" height="720px" src="https://clausa.app.carto.com/map/51125179-58c9-47fa-9f23-022d86f0c120"></iframe>
 
 The points of interest are categorized into "patrimony, museum and monuments," "theatre and arts," "gastronomy," and "leisure." The map highlights the high number of restaurants and cafés with green and yellow dots.
 
@@ -46,13 +143,44 @@ This initial map serves as a foundation for understanding the data, conducting e
 
 ### 2.2. Accessibility Analysis
 
-To understand the accessibility of key attractions in Madrid, we conducted an isochrone intersection analysis. This involved generating isolines for every point of interest (POI) in the categories of "Patrimony, Monuments and Museums", "Theaters and Arts", "Gastronomy", and "Leisure". Each isoline represented a 15-minute walking distance from the respective POI, providing a spatial representation of what a tourist could access within a quarter of an hour's walk.
+To gain insights into the accessibility of key attractions in Madrid, we leveraged our workflows to conduct an isochrone intersection analysis. This involved a series of steps executed within Workflow 2, enabling us to understand the spatial relationships and convenience of various points of interest (POI) categories.
 
-We then performed spatial aggregations and intersections of these isolines to identify zones of overlap. These overlapping zones represent areas where a tourist can conveniently access a variety of attractions within a 15-minute walk, making them highly desirable locations for a hotel. This accessibility analysis played a crucial role in highlighting the areas that offer the most convenience for tourists, particularly those interested in Madrid's cultural heritage, performing arts scene, gastronomy, and leisure activities.
+Within Workflow 2, we initiated the creation of isochrones representing 15-minute walking distances from each POI within the categories of "Patrimony, Monuments and Museums," "Theaters and Arts," "Gastronomy," and "Leisure." These isochrones served as spatial boundaries, illustrating what a tourist could conveniently access within a quarter of an hour's walk from each respective POI. 
 
-In addition to the isochrone intersection analysis, we also considered the proximity of potential hotel locations to existing NH Hotels. This was an important factor to avoid cannibalization, where a new hotel might draw customers away from existing NH Hotels in the vicinity.
+<img src="https://i.ibb.co/yXKSX1C/Screenshot-2023-07-05-at-06-20-35-2x.png" alt="Workflow study">
+<figcaption><small><strong>Workflow 2.</strong> Creation of 15-minute walking isochrones for the different POI categories and their intersection and aggregation.</small></figcaption>
 
-To incorporate this factor, we calculated the distance from each hexagon in our spatial grid to each existing NH Hotel. We then kept the minimum distance for each hexagon, representing the closest existing NH Hotel.
+After generating the isochrones, we performed spatial aggregations and intersections to identify zones of overlap. These overlapping zones indicated areas where a tourist could conveniently access a diverse range of attractions within a 15-minute walking distance. These areas emerged as highly desirable locations for hotels, offering optimal convenience to tourists.
+
+The accessibility analysis carried out through Workflow 2 played a critical role in identifying areas that provided the utmost convenience for tourists interested in Madrid's cultural heritage, performing arts scene, gastronomy, and leisure activities. By understanding the intersecting zones, we could pinpoint the regions that offered the most accessible and vibrant experience for tourists, aiding in strategic decision-making for the placement of accommodations and highlighting key areas of interest within the city.
+
+In addition to the isochrone intersection analysis, we took into account the proximity of potential hotel locations to existing NH Hotels. This consideration aimed to avoid cannibalization, which occurs when a new hotel draws customers away from nearby NH Hotels.
+
+To assess this proximity, we performed an analysis using a SQL query. We defined a buffer area to encompass the study area in Madrid, and then selected NH Hotels within that buffer zone. Specifically, we focused on NH Hotels and located within the buffer area.
+
+Next, we created a grid of hexagons to represent different potential hotel locations. For each hexagon in the grid, we calculated the minimum distance to the closest NH Hotel. This distance metric helped us understand the proximity of each potential hotel location to existing NH Hotels.
+```sql
+DECLARE madrid_buffer GEOGRAPHY;
+SET madrid_buffer = ST_BUFFER(ST_GEOGPOINT(-3.70000775514063, 40.4150453503748), 3500);
+
+WITH NH_hotels AS (
+ SELECT `carto-un`.carto.H3_FROMGEOGPOINT(geom, 10) AS h3
+ FROM nh_hotels_table
+ WHERE ST_CONTAINS(madrid_buffer, geom) 
+ AND brand = 'NH_%'
+),
+
+h3_grid AS (
+ SELECT h3
+ FROM h3_grid_table
+)
+
+SELECT h3_grid.h3, MIN(`carto-un`.carto.H3_DISTANCE(h3_grid.h3, NH_hotels.h3)) AS dist
+FROM NH_hotels
+CROSS JOIN h3_grid
+GROUP BY h3_grid.h3;
+```
+
 
 This proximity data, along with the coverage of 15-minute walk isochrones from tourist points of interest, were used to enrich our analysis. These factors helped us identify locations that not only offer high accessibility to key attractions but also maintain a healthy distance from existing NH Hotels, ensuring a balanced distribution of accommodations across the city.
 <iframe width="1280px" height="720px" src="https://clausa.app.carto.com/map/d973dc67-828d-414c-bc74-3cc839221e98"></iframe>
@@ -93,7 +221,7 @@ To achieve this, we utilized the following procedures
 #### Geographically Weighted Regression (GWR):
 Geographically Weighted Regression (GWR) was performed to understand the spatial correlations between the target variable, our target audience, and the correlation variables including the count of POI per category, the percentage of area covered by them. GWR allows us to account for spatial heterogeneity and better understand how different variables influence the suitability of hotel locations in Madrid. By applying weights to neighboring cells using the Gaussian kernel function, GWR captures the localized impacts of these variables and helps us uncover spatial patterns.
 
-```
+```sql
 CALL `carto-un`.carto.GWR_GRID(
   -- Source Spatial Index grid
   'carto-dw-ac-vs5d76ww.shared.madrid_h3_study_area_enriched_final_NH',
@@ -129,7 +257,7 @@ To assign weights to the variables in our analysis, we referred to the 2019 Tour
 
 Based on the relevance of these categories to the hotel industry and their influence on location desirability, we focused our analysis on the categories of Patrimony, Arts, Gastronomy, and Leisure. We excluded the categories "Visit family or friends" and "Other" from the normalization process, as they were not considered in the assignment of weights.
 
-To represent the relative importance of these chosen categories within the total weight, we performed normalization. Each percentage was divided by the sum of the percentages of the considered categories (Patrimony, Arts, Gastronomy, and Leisure), and then multiplied by the remaining weight after assigning a 20% to each of the following factors: visitors_midhigh_40_69_sum, covered_percentage, and hilton_dist.
+To represent the relative importance of these chosen categories within the total weight, we performed normalization. Each percentage was divided by the sum of the percentages of the considered categories (Patrimony, Arts, Gastronomy, and Leisure), and then multiplied by the remaining weight after assigning a 20% to each of the following factors: visitors_midhigh_40_69_sum, covered_percentage, and NH_distance.
 
 This normalization process resulted in the following weights for the chosen categories:
 
@@ -138,8 +266,15 @@ This normalization process resulted in the following weights for the chosen cate
 - `leisure_count`: 6.364%
 - `theatre_arts_count`: 9.64%
 
-These weights, along with the weights for other factors, sum up to 100%, ensuring that they accurately represent the relative proportions of each category within the total weight. By incorporating these weights into our analysis, we can better understand the significance of each category and its influence on the suitability of potential hotel locations in Madrid.
-```
+and adding the other three variables: 
+- `visitors_midhigh_40_69_sum`: 20%
+- `covered_percentage`: 20%
+- `NH_distance`: 20%
+
+
+
+These weights sum up to 100%, ensuring that they accurately represent the relative proportions of each category within the total weight. By incorporating these weights into our analysis, we can better understand the significance of each category and its influence on the suitability of potential hotel locations in Madrid.
+```sql
 CALL `carto-un`.carto.CREATE_SPATIAL_COMPOSITE_UNSUPERVISED(
   -- Input table
   'carto-dw-ac-vs5d76ww.shared.madrid_h3_study_area_enriched_final_NH',
@@ -171,7 +306,7 @@ The variables were scaled using the STANDARD_SCALER method, which subtracts the 
 
 #### Hotspot Detection:
 Finally, we conducted hotspot detection using the COMMERCIAL_HOTSPOTS procedure. 
-```
+```sql
 CALL `carto-un`.carto.COMMERCIAL_HOTSPOTS(
   'carto-dw-ac-vs5d76ww.shared.madrid_h3_study_area_enriched_final_NH',
   'carto-dw-ac-vs5d76ww.shared.madrid_h3_study_area_commercial_hotspots_NH',
