@@ -2,8 +2,8 @@
 /* CSS styles for animation */
 .code-block {
   overflow: auto; /* Hide overflow to clip the height */
-  max-height: 200px; /* Initial max-height value */
-  max-width: 600px; /* Initial max-height value */
+  max-height: 300px; /* Initial max-height value */
+  max-width: 1200px; /* Initial max-height value */
   transition: max-height 0.5s ease-out; /* Apply transition effect */
 }
 
@@ -14,18 +14,6 @@
 # Harnessing the Power of Geospatial Analytics for Strategic Hotel Site Selection in Madrid
 Prepared By: Gerardo Ezequiel Martín Carreño
 Date: 03/07/2023
-
-Table of Contents:
-1. Introduction and Problem Context
-2. Methodology
-   2.1 Data Acquisition & Preprocessing
-      2.1.1 Datasets
-      2.1.2 Preprocessing
-   2.2 Accessibility Analysis
-   2.3 Spatial Correlation, Hotspot Detection Analysis
-   2.4 Spatial Index Enrichment
-   2.5 Competitive Proximity and Dispersion Analysis using Local Outlier Factor and KNN
-3. Value of the Analysis for NH Hotels
 
 ## 1. Introduction and Problem Context
 
