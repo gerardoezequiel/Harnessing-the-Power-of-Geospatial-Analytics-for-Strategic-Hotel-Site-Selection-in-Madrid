@@ -15,6 +15,25 @@
 Prepared By: Gerardo Ezequiel Martín Carreño
 Date: 03/07/2023
 
+Table of Contents:
+1. Introduction and Problem Context
+2. Methodology
+   2.1 Data Acquisition & Preprocessing
+      2.1.1 Datasets
+      2.1.2 Preprocessing
+   2.2 Accessibility Analysis
+   2.3 Spatial Correlation, Hotspot Detection Analysis
+   2.4 Spatial Index Enrichment
+   2.5 Competitive Proximity and Dispersion Analysis using Local Outlier Factor and KNN
+3. Value of the Analysis for NH Hotels
+
+
+
+
+
+
+
+
 ## 1. Introduction and Problem Context
 
 
@@ -206,7 +225,21 @@ In our analysis to identify ideal hotel sites in Madrid, we employed spatial cor
 
 To achieve this, we utilized the following procedures 
 
-#### Geographically Weighted Regression (GWR):
+Sections:
+- Spatial Correlation and Geographically Weighted Regression (GWR)
+- Composite Score Calculation
+- Hotspot Detection using Getis Ord Statistics
+
+#### 2.4.1 Geographically Weighted Regression (GWR)
+
+Geographically Weighted Regression (GWR) is a powerful analytical technique that helps us understand the spatial correlations between the target variable (our target audience) and the correlation variables (such as the count of points of interest per category and the percentage of area covered by them). GWR allows us to account for spatial heterogeneity, recognizing that the relationships between variables may vary across different locations within Madrid.
+
+To perform GWR, we divided the study area into a grid of cells. For each cell, a local regression model was created, taking into account the data from neighboring cells within a specified neighborhood. The weights assigned to the neighboring cells were determined using the Gaussian kernel function, which means that closer cells had higher weights, while cells further away had lower weights.
+
+The GWR analysis provided us with coefficients for each cell, indicating the relationship between the coefficient and the target variable. Positive coefficients indicate a positive relationship, while negative coefficients indicate a negative relationship. A coefficient of 0 suggests no relationship.
+
+By conducting GWR, we were able to capture the localized impacts of different variables and uncover spatial patterns. This analysis helped us understand how factors such as the count of points of interest per category and the percentage of area covered by them influence the suitability of hotel locations in Madrid. It allowed us to identify areas where specific factors have a stronger influence, enabling NH Hotels to prioritize locations that align with their target audience and preferences.
+
 Geographically Weighted Regression (GWR) was performed to understand the spatial correlations between the target variable, our target audience, and the correlation variables including the count of POI per category, the percentage of area covered by them. GWR allows us to account for spatial heterogeneity and better understand how different variables influence the suitability of hotel locations in Madrid. By applying weights to neighboring cells using the Gaussian kernel function, GWR captures the localized impacts of these variables and helps us uncover spatial patterns.
 
 ```sql
@@ -225,10 +258,21 @@ CALL `carto-un`.carto.GWR_GRID(
 ```
 
  We used the H3 spatial index grid and set the k-ring distance to 3, indicating the neighborhood size around each cell. The Gaussian kernel function was applied to assign weights to neighboring cells, with closer cells having higher weights. 
+ <iframe width="1280px" height="720px" src="https://clausa.app.carto.com/map/d3d79b28-bd83-4ce2-a679-ce66ce744d29"></iframe>
 
-#### Composite Score Calculation :
+#### 2.4.2 Composite Score
 
-After performing the geographically weighted regression (GWR) analysis and gaining a better understanding of the spatial relationships between variables, we proceeded to calculate composite scores. The composite scores provide a comprehensive assessment of each potential hotel site by combining and weighting the relevant factors.
+After performing the geographically weighted regression (GWR) analysis and gaining a better understanding of the spatial relationships between variables, we proceeded to calculate composite scores.  The composite scores provide a comprehensive assessment of each potential hotel site by combining and weighting the relevant factors.
+
+There are various methods to compute composite scores, each with its own advantages and considerations. In this analysis, we have chosen the "CUSTOM_WEIGHTS" method because we have access to data from the 2019 Tourist Perception Survey conducted by the Tourist Intelligence Centre of Madrid Destino. This survey provides valuable insights into visitor preferences and allows us to assign weights to different variables based on their importance.
+
+The selection of an appropriate scoring method depends on various factors, as illustrated in the diagram below:
+
+![](https://3078048011-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FybPdpmLltPkzGFvz7m8A%2Fuploads%2FwrLEgV6REq3bQcde71QI%2Fimage.png?alt=media&token=1b6a4a97-53de-4e0b-bc16-89df06c3389f)
+
+As shown in the diagram above, the choice of the scoring method depends on the availability of expert knowledge: when this is available, the recommended choice for the scoring_method parameter is CUSTOM_WEIGHTS, which allows the user to customize both the scaling and the aggregation functions as well as the set of weights.
+
+Using the "CUSTOM_WEIGHTS" method, we assign weights to each variable based on its relevance and impact on the overall assessment. These weights reflect the relative importance of each factor in influencing the desirability of potential hotel locations. By incorporating these weights, we create a composite score that takes into account the specific factors that are most significant for hotel development in Madrid.
 
 By assigning weights to each variable based on their importance, we create a composite score that takes into account the relative significance of each factor. This process allows us to evaluate the suitability of each location for hotel development in a more comprehensive manner. The composite scores enable us to rank the sites and identify those with the highest potential for success.
 
@@ -262,6 +306,10 @@ and adding the other three variables:
 
 
 These weights sum up to 100%, ensuring that they accurately represent the relative proportions of each category within the total weight. By incorporating these weights into our analysis, we can better understand the significance of each category and its influence on the suitability of potential hotel locations in Madrid.
+
+To calculate the composite scores, we use the CREATE_SPATIAL_COMPOSITE_UNSUPERVISED procedure from CARTO Analytics Toolbox for BigQuery. This procedure allows us to combine the variables, apply customized weights, and perform scaling to ensure comparability across different variables. We chose the "STANDARD_SCALER" method for scaling, which standardizes the variables by subtracting the mean and dividing by the standard deviation.
+
+
 ```sql
 CALL `carto-un`.carto.CREATE_SPATIAL_COMPOSITE_UNSUPERVISED(
   -- Input table
@@ -290,10 +338,29 @@ CALL `carto-un`.carto.CREATE_SPATIAL_COMPOSITE_UNSUPERVISED(
 );
 ```
 
+
+
 The variables were scaled using the STANDARD_SCALER method, which subtracts the mean and divides by the standard deviation. The resulting composite scores were normalized to the range [0.0, 1.0].
 
-#### Hotspot Detection:
+The computed composite scores provide a comprehensive assessment of each potential hotel site in Madrid, taking into account the weighted factors derived from the tourism report. By analyzing and visualizing these scores, we can identify areas with the highest potential for hotel development success and make informed decisions based on the composite scores and spatial analysis.
+
+#### 2.4.3 Hotspot Detection
+
+To conduct hotspot detection and gain valuable insights into the spatial distribution of desirable hotel sites in Madrid, we utilized the COMMERCIAL_HOTSPOTS procedure. This powerful analysis technique leverages the Getis Ord Gi* statistic to identify clusters of high-ranking locations where multiple factors align, indicating areas with a higher potential for success and profitability.
+
+In our analysis, we carefully selected a dataset containing relevant information about potential hotel sites and their associated variables. These variables were chosen based on their influence in determining the desirability of hotel sites, encompassing visitor demographics, accessibility, cultural attractions, and leisure amenities.
+
+To account for the varying importance of each variable, we assigned weights to them during the hotspot analysis. These weights reflected their relative significance in influencing the desirability of potential hotel locations. By incorporating these weights, we ensured that the analysis captured the true importance of each factor in identifying hotspots.
+
+The kring parameter played a vital role in the hotspot analysis, determining the size of the neighborhood considered within the analysis. With a value of 3, we included cells within a radius of 3 units from the origin cell, allowing us to detect spatial clusters within a specified distance.
+
+Moreover, we set a p-value threshold of 0.05 to determine the significance level for hotspot identification. Cells with p-values below this threshold were identified as hotspots, indicating a statistically significant clustering of high-ranking locations. This approach helped us identify areas where desirable hotel sites tend to cluster together, providing valuable insights for NH Hotels' decision-making process.
+
+By conducting the Getis Ord hotspot analysis through the COMMERCIAL_HOTSPOTS procedure, we pinpointed specific regions in Madrid where multiple factors aligned to create hotspots of desirable hotel sites. These hotspots represented areas with a higher concentration of favorable attributes that contribute to their desirability.
+
 Finally, we conducted hotspot detection using the COMMERCIAL_HOTSPOTS procedure. 
+
+
 ```sql
 CALL `carto-un`.carto.COMMERCIAL_HOTSPOTS(
   'carto-dw-ac-vs5d76ww.shared.madrid_h3_study_area_enriched_final_NH',
@@ -307,27 +374,115 @@ CALL `carto-un`.carto.COMMERCIAL_HOTSPOTS(
 );
 ```
 
-The kring parameter was set to 3, indicating that cells within a radius of 3 units from the origin cell were considered in the analysis. The p-value threshold for hotspot significance was set to 0.05, meaning that only cells with a p-value below this threshold were identified as hotspots.
+The identification of these hotspots empowers NH Hotels to strategically focus their attention and allocate resources to areas with the highest potential for success and profitability. By capitalizing on these insights, NH Hotels can make informed decisions regarding site selection and prioritize their investments in locations that offer the most promising opportunities.
 
-The Getis Ord hotspot analysis, conducted through the Commercial Hotspots tool in the analytical toolbox, helped us identify areas with clusters of high-ranking locations. This analysis allows us to pinpoint specific regions in Madrid where multiple factors align to create hotspots of desirable hotel sites. By identifying these hotspots, NH Hotels can focus their attention on areas with the highest potential for success and profitability.
-
-By combining geographically weighted regression (GWR) for spatial correlation analysis, the creation of a composite score based on weighted factors, and hotspot detection using Getis Ord statistics, we obtained a comprehensive understanding of the ideal hotel sites in Madrid. These techniques allowed us to consider multiple factors simultaneously and identify areas with clusters of high-ranking locations, providing valuable insights for NH Hotels' decision-making process in hotel site selection.
+In summary, our hotspot detection analysis using the COMMERCIAL_HOTSPOTS procedure allowed us to identify clusters of high-ranking locations in Madrid. These clusters represent areas where multiple factors align to create hotspots of desirable hotel sites. By leveraging this spatial analysis technique, NH Hotels can strategically plan their expansion and optimize their decision-making process for site selection, ultimately enhancing their chances of success in the competitive hotel industry.
 <iframe width="1280px" height="720px" src="https://clausa.app.carto.com/map/a6b9411a-7273-4ab4-ae63-037c91c95b94"></iframe>
+
+Through the synergistic integration of geographically weighted regression (GWR), the creation of a composite score based on weighted factors, and hotspot detection using Getis Ord statistics, our analysis has provided us with a holistic and comprehensive understanding of the ideal hotel sites in Madrid. By incorporating these sophisticated techniques, we were able to examine multiple factors simultaneously, revealing crucial insights that are invaluable for NH Hotels' strategic decision-making process in hotel site selection.
+
+Geographically weighted regression (GWR) allowed us to unravel the spatial correlations and localized impacts of various variables, enabling a deeper understanding of how different factors influence the suitability of hotel locations. By assigning weights to each variable based on their significance, we created a composite score that accurately reflects the relative importance of each factor. This composite score served as a powerful tool to rank and prioritize potential hotel sites in Madrid.
+
+Additionally, our hotspot detection analysis using Getis Ord statistics enabled us to identify clusters of high-ranking locations, representing areas with a higher concentration of favorable attributes. These hotspots highlighted regions where multiple factors aligned, indicating their desirability and potential for success.
+
+By combining these advanced techniques, we have gained valuable insights that go beyond individual variables and isolated analyses. Our comprehensive approach has provided NH Hotels with a robust foundation for strategic decision-making, offering a clearer understanding of the ideal hotel sites in Madrid and maximizing the chances of success in the competitive hotel industry.
   
 ### 2.5 Competitive Proximity and Dispersion Analysis using Local Outlier Factor and KNN 
 
 The Competitive Proximity and Dispersion Analysis, utilizing the Local Outlier Factor (LOF) and K-nearest neighbors (KNN) methodologies, provides NH Hotels with valuable insights into the spatial distribution and proximity of hotels in Madrid. This analysis reveals areas of high competition and potential cannibalization, helping NH Hotels select the best location from their identified commercial hotspots.
 
-#### Local Outlier Factor (LOF)
- LOF is a powerful algorithm that detects outliers and anomalies within a dataset. In the context of this analysis, LOF is applied to the distribution of hotels in Madrid. It helps identify areas where the density of hotels significantly deviates from the expected pattern. By highlighting these outliers, NH Hotels gains insights into areas of high competition and potential market saturation. This information enables NH Hotels to make strategic decisions and avoid locations with excessive hotel density, ensuring a balanced distribution of accommodations across the city.
+#### 2.5.1 Local Outlier Factor (LOF)
+The Local Outlier Factor (LOF) algorithm is a powerful tool for detecting outliers and anomalies within a dataset. It measures the density deviation of a data point compared to its neighbors. If a point has a much lower density than its neighbors, it is considered an outlier and receives a high LOF score (>1).
 
-#### K-nearest neighbors (KNN)
- KNN is a machine learning algorithm that measures the proximity between data points. In the Competitive Proximity and Dispersion Analysis, KNN is employed to assess the spatial relationship between hotels in Madrid. By analyzing the distances between hotels, NH Hotels can identify clusters and patterns of hotel distribution. This information helps in understanding the proximity of existing hotels to potential new locations. NH Hotels can strategically position their new hotel to avoid cannibalization with existing hotels and ensure a healthy competitive landscape.
+In the context of analyzing hotel distribution, LOF helps identify outliers that deviate from the expected clustering pattern. For example, a hotel located on the edge of the study area where most hotels are clustered in the core would have a high LOF score. Conversely, if hotels are sparsely distributed across a town, the LOF score would be lower (<1) as there is no significant clustering behavior among its neighbors.
 
-By applying LOF and KNN methodologies, NH Hotels gains valuable insights into the competitive landscape of Madrid's hotel industry. The analysis reveals areas with a high concentration of hotels, indicating intense competition and potential cannibalization. This information allows NH Hotels to make informed decisions about the best location from their commercial hotspots. NH Hotels can select a location that not only offers accessibility to key attractions and amenities but also ensures a healthy distance from existing hotels, avoiding excessive competition and optimizing their market presence.
+To calculate the LOF, users must specify the value of k, which represents the distance to the kth nearest neighbor. A smaller k-value, such as 5, produces more localized results but is more sensitive to noise in the data.
 
-The Competitive Proximity and Dispersion Analysis, supported by LOF and KNN techniques, plays a vital role in NH Hotels' expansion strategy. It helps them identify areas of opportunity, understand the competitive dynamics, and select the optimal location for their new hotel. By leveraging these insights, NH Hotels can position themselves strategically in the market, minimize cannibalization, and maximize their potential for success and profitability in the competitive hotel industry of Madrid.
+In our analysis, we used the carto-un.carto.LOF function to compute the LOF scores for hotel locations in Madrid. We chose a threshold of 1.2 to identify areas of high competition, where hotels are in very close proximity to each other. By filtering for LOF scores below 1.2, we can focus on these areas and gain insights into intense competition and potential market saturation.
+
+```sql
+CREATE OR REPLACE TABLE `carto-dw-ac-vs5d76ww.shared.madrid_hotels_competitors_NH_LOF_analysis` AS
+WITH lof_output AS (
+    -- We calculate the Local Outlier Factor in order to identify hotels without competition.
+    SELECT `carto-un`.carto.LOF(ARRAY_AGG(STRUCT(CAST(id AS STRING), geom)), 5) as lof 
+    FROM `carto-dw-ac-vs5d76ww.shared.madrid_hotels_brand_id`
+    WHERE brand != 'NH_%'
+)
+SELECT lof.* 
+FROM lof_output, UNNEST(lof_output.lof) AS lof
+WHERE lof.lof < 1.2;
+```
+
+The insights provided by LOF empower NH Hotels to strategically allocate resources, identify untapped market opportunities, and optimize their hotel portfolio. By avoiding locations with excessive hotel density and focusing on areas with higher demand, NH Hotels positions itself for long-term success and profitability.
+
+Moreover, ensuring a balanced distribution of accommodations across the city enhances NH Hotels' competitiveness and contributes to the overall development and sustainability of the hotel industry in Madrid.
+
+By leveraging the valuable insights from LOF, NH Hotels makes informed decisions, avoids concentration in specific areas, and optimizes its market presence. This strategic approach enables NH Hotels to focus on areas with higher demand and better potential for success.
+
+#### 2.5.2 K-nearest neighbors (KNN)
+KNN is a machine learning algorithm utilized in the Competitive Proximity and Dispersion Analysis to assess the spatial relationship between hotels in Madrid. It measures the proximity between data points and helps NH Hotels understand the distances between existing hotels and potential new locations. By analyzing the distances, NH Hotels can identify clusters and patterns of hotel distribution, enabling them to strategically position their new hotel to avoid cannibalization with existing establishments and ensure a healthy competitive landscape.
+
+To implement the KNN analysis, we utilized the carto-un.carto.KNN function in SQL. We first prepared a dataset of hotels within the study area, including their unique identifiers, geometry, stars rating, and brand. Then, by applying the KNN function with a k-value of 10, we determined the nearest neighbors for each NH Hotel location. The resulting output provides information about the NH Hotel, its neighboring hotels, their distances, and stars ratings, allowing NH Hotels to make strategic decisions based on the spatial relationships and competition in the market.healthy distance from existing hotels, avoiding excessive competition and optimizing their market presence.
+
+
+```sql
+WITH hotels AS (
+    SELECT 
+        CONCAT(brand, '_', CAST(ROW_NUMBER() OVER(PARTITION BY brand ORDER BY name) AS STRING)) AS id,
+        geom, stars_rating, brand
+    FROM `carto-dw-ac-vs5d76ww.shared.madrid_hotels_brand`
+    WHERE ST_WITHIN(geom, (SELECT geom FROM `carto-dw-ac-vs5d76ww.shared.madrid_study_area`))
+),
+knn AS (
+    SELECT 
+        knn.*
+    FROM UNNEST((SELECT `carto-un`.carto.KNN(ARRAY_AGG(STRUCT(id, geom)), 10) FROM hotels)) AS knn
+    WHERE geoid LIKE 'NH_%' AND geoid_knn NOT LIKE 'NH_%'
+)
+SELECT 
+    h.id AS NH_id,
+    h.geom AS geom,
+    h.stars_rating AS NH_stars,
+    o.id AS other_id,
+    o.geom AS other_geom,
+    o.stars_rating AS other_stars,
+    k.distance,
+    k.knn,
+    ST_MAKELINE(h.geom, o.geom) AS line_geom
+FROM knn k
+JOIN hotels h ON k.geoid = h.id
+JOIN hotels o ON k.geoid_knn = o.id
+ORDER BY NH_id, knn;
+```
 <iframe width="1280px" height="720px" src="https://clausa.app.carto.com/map/dad1bcc9-c728-48ff-8661-ee3ae27049f2"></iframe>
+
+In our comprehensive analysis of Madrid's hotel industry, we employed advanced methodologies such as LOF (Local Outlier Factor) and KNN (K-nearest neighbors) to gain invaluable insights into the competitive landscape. Through this analysis, we were able to identify areas characterized by a high concentration of hotels, indicating intense competition and potential cannibalization among establishments.
+
+By leveraging the insights derived from LOF and KNN, NH Hotels can make informed decisions regarding the optimal location for their new hotel within their identified commercial hotspots. The selection process takes into account various factors, including accessibility to key attractions and amenities, as well as the importance of maintaining a healthy distance from existing hotels. This strategic approach ensures NH Hotels can avoid excessive competition and optimize their market presence in Madrid.
+
+The Competitive Proximity and Dispersion Analysis, supported by the robust LOF and KNN techniques, assumes a vital role in NH Hotels' expansion strategy. It provides them with the ability to identify areas of opportunity, gain a deep understanding of the competitive dynamics at play, and ultimately select the most optimal location for their new hotel. By effectively leveraging these insights, NH Hotels can position themselves strategically in the market, minimize cannibalization with existing establishments, and maximize their potential for long-term success and profitability within Madrid's fiercely competitive hotel industry.
+
+#### 2.6 Methodological Key insights
+
+Identification of Commercial Hotspots
+- Commercial hotspots represent areas with a high concentration of favorable attributes for hotel development.
+- These hotspots indicate regions where visitor demographics, points of interest density, and accessibility align to create an environment conducive to hotel success.
+
+Factors Influencing Hotel Suitability
+- Geographically weighted regression (GWR) analysis reveals localized impacts and spatial correlations between variables.
+- Factors such as patrimony, arts, gastronomy, leisure, visitor demographics, coverage percentage, and distance from existing NH Hotels significantly influence the suitability of potential hotel locations.
+
+Composite Scores for Site Evaluation
+- Composite scores are calculated by assigning weights to each relevant factor based on their importance.
+- These scores provide a comprehensive assessment of each potential hotel site, allowing for ranking and prioritization based on the weighted factors.
+
+Hotspot Detection
+- Hotspot detection using Getis Ord statistics identifies clusters of high-ranking locations within the commercial hotspots.
+- These clusters represent areas with a higher concentration of favorable attributes, indicating their desirability for hotel development.
+
+Competitive Proximity Analysis
+- Local Outlier Factor (LOF) and K-nearest neighbors (KNN) techniques assess the competitive landscape and proximity of existing hotels.
+- This analysis helps understand areas of high competition and potential cannibalization among establishments.
 
 
 
@@ -352,4 +507,3 @@ In a competitive hotel market like Madrid, NH Hotels strives to differentiate it
 NH Hotels aims for sustainable growth and long-term success in Madrid. The analysis contributes to this goal by enabling NH Hotels to establish a strong presence and reputation in the market. By selecting optimal locations that cater to the target demographic, offer convenience, and reflect the local culture, NH Hotels can build a loyal customer base and foster brand loyalty. The strategic placement of hotels based on the analysis insights enhances NH Hotels' reputation as a trusted and preferred choice for visitors to Madrid. This long-term success translates into increased market share, revenue, and profitability.
 
 In summary, the analysis provides NH Hotels with significant value in optimizing location selection, enhancing customer satisfaction, gaining a competitive advantage, and ensuring long-term success. By leveraging the insights and recommendations from the analysis, NH Hotels can drive growth, deliver exceptional guest experiences, differentiate from competitors, and establish a strong market presence in Madrid.
-
