@@ -2,24 +2,24 @@
 # Harnessing the Power of Geospatial Analytics for Strategic Hotel Site Selection in Madrid
 Prepared By: Gerardo Ezequiel Martín Carreño
 Date: 03/07/2023
+  
+## Table of Contents
 
-Table of Contents:
-1. Introduction and Problem Context
-2. Methodology
-   2.1 Data Acquisition & Preprocessing
-      2.1.1 Datasets
-      2.1.2 Preprocessing
-   2.2 Accessibility Analysis
-   2.3 Spatial Correlation, Hotspot Detection Analysis
-   2.4 Spatial Index Enrichment
-   2.5 Competitive Proximity and Dispersion Analysis using Local Outlier Factor and KNN
-3. Value of the Analysis for NH Hotels Group
-4. Leveraging CARTO for Enhanced Geospatial Analysis
-5. Limitations
-6. Conclusions
+1. [Introduction and Problem Context](#introduction-and-problem-context)
+2. [Methodology](#methodology)
+   2.1. [Data Acquisition & Preprocessing](#data-acquisition--preprocessing)
+      2.1.1. [Datasets](#datasets)
+      2.1.2. [Preprocessing](#preprocessing)
+   2.2. [Accessibility Analysis](#accessibility-analysis)
+   2.3. [Spatial Correlation, Hotspot Detection Analysis](#spatial-correlation-hotspot-detection-analysis)
+   2.4. [Spatial Index Enrichment](#spatial-index-enrichment)
+   2.5. [Competitive Proximity and Dispersion Analysis using Local Outlier Factor and KNN](#competitive-proximity-and-dispersion-analysis-using-local-outlier-factor-and-knn)
+3. [Value of the Analysis for NH Hotels Group](#value-of-the-analysis-for-nh-hotels-group)
+4. [Leveraging CARTO for Enhanced Geospatial Analysis](#leveraging-carto-for-enhanced-geospatial-analysis)
+5. [Limitations](#limitations)
+6. [Conclusions](#conclusions)
 
-
-## 1. Introduction and Problem Context
+## [1. Introduction and Problem Context](#introduction-and-context)
 NH Hotel Group, a renowned hotel chain based in Madrid, is actively seeking to open a new hotel that caters to the growing demand for cultural tourism. While NH Hotel Group has traditionally focused on serving business and corporate travelers, they recognize the shifting preferences of their target demographic and the opportunities presented by Madrid's rich cultural heritage. However, expansion in a city as dynamic and competitive as Madrid requires careful planning and strategic decision-making.
 
 The target demographic for their new hotel is the mid-high income population aged 40-69, which represents a significant portion of visitors to Madrid. This demographic is attracted to the city's cultural heritage, vibrant performing arts scene, and diverse gastronomical offerings, as highlighted by the Madrid Tourism Report (Tourist Perception Survey 2019). The report indicates that 97.64% of visitors associate the city's service offerings with a mid-high purchasing power, emphasizing the potential of targeting this group for cultural tourism experiences. 
@@ -44,7 +44,7 @@ Our goal in this project is to leverage the power of geospatial data and sophist
 
 
 
-## 2. Methodology
+## [2. Methodology](#methodology)
 
 ### 2.1 Data Acquisition & Preprocessing
 #### 2.1.1 Datasets
