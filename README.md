@@ -9,8 +9,6 @@ Date: 03/07/2023
 1. [Introduction and Problem Context](#1-introduction-and-problem-context)  
 2. [Methodology](#2-methodology)  
    2.1. [Data Acquisition & Preprocessing](#21-data-acquisition--preprocessing)  
-      2.1.1. [Datasets](#211-datasets)  
-      2.1.2. [Preprocessing](#212-preprocessing)  
    2.2. [Accessibility Analysis](#22-accessibility-analysis)  
    2.3. [Spatial Correlation, Hotspot Detection Analysis](#23-spatial-correlation-hotspot-detection-analysis)  
    2.4. [Spatial Index Enrichment](#24-spatial-index-enrichment)  
