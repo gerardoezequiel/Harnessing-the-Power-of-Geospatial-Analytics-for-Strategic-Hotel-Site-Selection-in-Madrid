@@ -2,11 +2,12 @@
 # Harnessing the Power of Geospatial Analytics for Strategic Hotel Site Selection in Madrid
 Prepared By: Gerardo Ezequiel Martín Carreño
 Date: 03/07/2023
-  
+
+
 ## Table of Contents
 
-1. [Introduction and Problem Context](#introduction-and-problem-context)
-2. [Methodology](#methodology)
+1. [Introduction and Problem Context](#1-introduction-and-problem-context)
+2. [Methodology](#2-methodology)
    2.1. [Data Acquisition & Preprocessing](#data-acquisition--preprocessing)
       2.1.1. [Datasets](#datasets)
       2.1.2. [Preprocessing](#preprocessing)
@@ -18,6 +19,13 @@ Date: 03/07/2023
 4. [Leveraging CARTO for Enhanced Geospatial Analysis](#leveraging-carto-for-enhanced-geospatial-analysis)
 5. [Limitations](#limitations)
 6. [Conclusions](#conclusions)
+
+
+
+
+
+
+
 
 ## [1. Introduction and Problem Context](#introduction-and-context)
 NH Hotel Group, a renowned hotel chain based in Madrid, is actively seeking to open a new hotel that caters to the growing demand for cultural tourism. While NH Hotel Group has traditionally focused on serving business and corporate travelers, they recognize the shifting preferences of their target demographic and the opportunities presented by Madrid's rich cultural heritage. However, expansion in a city as dynamic and competitive as Madrid requires careful planning and strategic decision-making.
