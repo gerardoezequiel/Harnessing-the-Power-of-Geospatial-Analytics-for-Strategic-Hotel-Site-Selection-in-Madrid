@@ -5,9 +5,12 @@ Date: 03/07/2023
 
 ## Table of Contents
 
+[Summary](#summary)  
 1. [Introduction and Problem Context](#1-introduction-and-problem-context)  
 2. [Methodology](#2-methodology)  
    2.1. [Data Acquisition & Preprocessing](#21-data-acquisition--preprocessing)  
+      2.1.1. [Datasets](#211-datasets)  
+      2.1.2. [Preprocessing](#212-preprocessing)  
    2.2. [Accessibility Analysis](#22-accessibility-analysis)  
    2.3. [Spatial Correlation, Hotspot Detection Analysis](#23-spatial-correlation-hotspot-detection-analysis)  
    2.4. [Spatial Index Enrichment](#24-spatial-index-enrichment)  
@@ -15,7 +18,7 @@ Date: 03/07/2023
 3. [Value of the Analysis for NH Hotels Group](#3-value-of-the-analysis-for-nh-hotels-group)  
 4. [Leveraging CARTO for Enhanced Geospatial Analysis](#4-leveraging-carto-for-enhanced-geospatial-analysis)  
 5. [Limitations](#5-limitations)  
-6. [Conclusions](#6-conclusions)  
+6. [Conclusions and Recommendations](#6-conclusion-and-recommendations)  
 
 ## [1. Introduction and Problem Context](#introduction-and-context)
 NH Hotel Group, a renowned hotel chain based in Madrid, is actively seeking to open a new hotel that caters to the growing demand for cultural tourism. While NH Hotel Group has traditionally focused on serving business and corporate travelers, they recognize the shifting preferences of their target demographic and the opportunities presented by Madrid's rich cultural heritage. However, expansion in a city as dynamic and competitive as Madrid requires careful planning and strategic decision-making.
@@ -626,9 +629,9 @@ In conclusion, the geospatial analysis conducted in this report has provided NH 
 
 
 
-# Summary
+## Summary
 
-## Harnessing the Power of Geospatial Analytics for Strategic Hotel Site Selection in Madrid
+### Harnessing the Power of Geospatial Analytics for Strategic Hotel Site Selection in Madrid
 
 ### 1. Introduction and context
 NH Hotel Group, a renowned hotel chain based in Madrid, seeks to open a new hotel catering to the growing demand for cultural tourism. The target demographic is the mid-high income population aged 40-69, attracted to the city's cultural heritage, performing arts scene, and gastronomical offerings. NH Hotels Group aims to provide luxury accommodations reflecting local culture, strategically located within walking distance of attractions. By embracing sustainability and selecting eco-friendly locations near tourist points of interest, NH Hotels Group ensures an exceptional guest experience while minimizing environmental impact.
