@@ -3,6 +3,8 @@
 Prepared By: Gerardo Ezequiel Martín Carreño
 Date: 03/07/2023
 
+
+
 ## Table of Contents
 
 [Summary](#summary)  
@@ -44,6 +46,30 @@ Our goal in this project is to leverage the power of geospatial data and sophist
 
 
 ## [2. Methodology](#methodology)
+
+Our methodology utilises sophisticated spatial analysis techniques to support NH Hotels Group in their hotel site selection process in Madrid. By combining data acquisition, preprocessing, and advanced analytical approaches, we uncover crucial factors that influence hotel suitability, accessibility, competitive proximity, and dispersion patterns within the city.
+
+To enhance our methodology and unlock spatial intelligence for smarter decision-making, we leveraged the powerful capabilities offered by CARTO's platform and Analytics Toolbox. Here's how CARTO's features integrated seamlessly into our methodology:
+
+**Seamless Cloud Connectivity & Integrations**
+In our case, we integrated CARTO with Google BigQuery, one of the leading cloud data platforms. CARTO's seamless integration with BigQuery eliminates the complexities of Extract, Transform, Load (ETL) processes and enhances scalability. This integration enabled us to connect and leverage spatial data effectively, ensuring smooth data workflows and unparalleled support for location-based decision-making.
+![](https://assets-global.website-files.com/6345207a1b18e581fcf67604/63bd89e9cd3c07f3671b3611_cloud-native-asset_white-bg.gif)
+
+**Data Preparation**
+CARTO's Data Observatory provided us with access to relevant datasets, allowing us to collect information on pedestrian traffic, existing accommodations, and points of interest in Madrid. This enriched our data acquisition process, ensuring comprehensive and up-to-date datasets for analysis.
+![](https://i.ibb.co/DgQxFd0/Screenshot-2023-07-09-at-17-51-21-2x.png)
+
+**Spatial Data Visualization** 
+CARTO's advanced visualization capabilities were instrumental in creating interactive maps and visualizations of the datasets. These visual representations aided in understanding spatial patterns and relationships, providing valuable insights into the city's dynamics.
+![](https://assets.website-files.com/6345207a1b18e581fcf67604/638dc4b9adbcad7169dce687_poster-video.a6526171%20(1).png)
+
+**Spatial Analysis Techniques**
+CARTO's Analytics Toolbox played a crucial role in our spatial analysis techniques. We leveraged functionalities such as isochrone intersection analysis, proximity analysis, geographically weighted regression (GWR) analysis, hotspot detection using Getis Ord statistics, and competitive proximity analysis using Local Outlier Factor (LOF) and K-nearest neighbours (KNN) techniques. CARTO's powerful tools allowed us to conduct these analyses effectively and efficiently, providing comprehensive insights into optimal hotel site selection, factors influencing suitability, identification of commercial hotspots, and assessment of the competitive landscape.
+![](https://i.ibb.co/820XdHP/image4.png)
+
+By integrating our methodology with CARTO's capabilities, we unlocked the full potential of spatial intelligence for smarter decision-making. CARTO's seamless cloud connectivity and integrations, including the integration with Google BigQuery, eliminated data silos, ensuring smooth data workflows and enabling effective leveraging of spatial data. Access to CARTO's Data Observatory enriched our analysis by providing a vast array of geospatial datasets, allowing us to gain deeper insights and make more informed decisions.
+
+Additionally, CARTO's rapid spatial analysis capabilities accelerated our analysis process, empowering us to make data-driven decisions more efficiently. The platform's advanced visualization capabilities facilitated effective communication of findings and aided in building impactful solutions tailored to NH Hotels Group's specific needs.
 
 ### 2.1 Data Acquisition & Preprocessing
 #### 2.1.1 Datasets
@@ -656,3 +682,4 @@ NH Hotel Group, a renowned hotel chain based in Madrid, seeks to open a new hote
 
 #### Conclusions
 The comprehensive geospatial analysis conducted using CARTO's platform empowers NH Hotels Group to optimize hotel site selection, enhance customer satisfaction, gain a competitive advantage, and ensure long-term success. By leveraging geospatial analytics and CARTO's platform, NH Hotels Group can make data-driven decisions that align with customer preferences, differentiate from competitors, and strategically expand their presence in Madrid's highly competitive hospitality industry.
+
