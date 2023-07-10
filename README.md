@@ -188,7 +188,7 @@ By examining the distribution of points of interest and their proximity to exist
 
 This initial map serves as a foundation for understanding the data, conducting exploratory analysis, and gaining insights into the variables and their relationships. It provides NH Hotels Group with valuable information to inform their decision-making process and strategy for hotel site selection in Madrid.
 
-### 2.2. Accessibility Analysis
+### 2.2. Accessibility and Proximity Analysis
 
 To gain insights into the accessibility of key attractions in Madrid, we conducted an in-depth accessibility analysis using isochrone intersection analysis. This analysis allowed us to understand the spatial relationships and convenience of various points of interest (POI) categories within a 15-minute walking distance.
 
