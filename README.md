@@ -1,7 +1,7 @@
 <style> /* CSS styles for animation */ .code-block { overflow: auto; /* Hide overflow to clip the height */ max-height: 300px; /* Initial max-height value */ max-width: 1200px; /* Initial max-height value */ transition: max-height 0.5s ease-out; /* Apply transition effect */ } .code-block:hover { max-height: 800px; /* Increase max-height on hover */ } </style>
-# Harnessing the Power of Geospatial Analytics for Strategic Hotel Site Selection in Madrid
+# Harnessing the Power of Geospatial Analytics in CARTO for Strategic Hotel Site Selection in Madrid
 Prepared By: Gerardo Ezequiel Martín Carreño
-Date: 03/07/2023
+Date: 10/07/2023
 
 
 
